@@ -14,22 +14,15 @@ const Sidebar = () => {
   return (
     <div className="relative min-h-screen  w-18 md:w-[18%]  flex flex-col  items-center lg:items-start justify-between">
       <ul className="sticky top-0 left-0 flex flex-col items-center lg:items-start">
-        <li className="lg:hidden">
-          <Link
-            to="/"
-            className="flex justify-center items-center text-3xl  my-2 px-4"
-          >
-            Z
-          </Link>
-        </li>
         <li>
           <Link
             to="/"
-            className=" hidden sm:hidden lg:flex justify-center items-center text-3xl  mb-8 px-4 mt-2"
+            className="flex justify-center items-center mt-2"
           >
-            Zwitter
+            <img src="/logo.png" className="h-15 w-15" alt="logo" />
           </Link>
         </li>
+
         <li className="flex items-center  border border-transparent rounded-3xl p-2 mb-2  lg:pr-5 w-fit  hover:bg-gray-900">
           <Link to="/" className="flex items-center">
             <MdHomeFilled className="w-8 h-8" />
