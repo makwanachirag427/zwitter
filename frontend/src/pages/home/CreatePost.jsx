@@ -2,11 +2,49 @@ import { useRef, useState } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmile } from "react-icons/bs";
 import { IoCloseSharp } from "react-icons/io5";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 const CreatePost = () => {
+  const queryClient = useQueryClient();
+
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
 
   const imgRef = useRef(null);
+
+  const {
+    mutate: createPost,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async ({ text, img }) => {
+      try {
+        const res = await fetch("/api/posts/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text, img }),
+        });
+
+        const data = res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+    onSuccess: () => {
+      setText("");
+      setImg(null);
+      toast.success("Post created successfully");
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  });
 
   const handleImgChange = (e) => {
     const file = e.target.files[0];
@@ -36,19 +74,22 @@ const CreatePost = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-            {img && (
-                <div className="relative w-72 mx-auto">
-                    <IoCloseSharp
-                     className="absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer"
-                     onClick={() => {
-                        setImg(null);
-                        imgRef.current.value = null;
-                     }}
-                    />
-                    <img src={img} className="w-full mx-auto h-72 object-contain rounded" />
-                </div>
-            )}
-    
+        {img && (
+          <div className="relative w-72 mx-auto">
+            <IoCloseSharp
+              className="absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer"
+              onClick={() => {
+                setImg(null);
+                imgRef.current.value = null;
+              }}
+            />
+            <img
+              src={img}
+              className="w-full mx-auto h-72 object-contain rounded"
+            />
+          </div>
+        )}
+
         <div className="flex justify-between py-2 border-t border-gray-700">
           <div className="flex gap-1 items-center">
             <CiImageOn
@@ -64,8 +105,17 @@ const CreatePost = () => {
               onChange={handleImgChange}
             />
           </div>
-            <button onClick={() => alert("Posted ....")} className="btn btn-primary rounded-full btn-sm text-white px-4">Post</button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              createPost({ text, img });
+            }}
+            className="btn btn-primary rounded-full btn-sm text-white px-4"
+          >
+            {isPending ? <LoadingSpinner size="md" /> : "Post"}
+          </button>
         </div>
+            {isError && <div className="text-red-500">{error.message}</div>}
       </form>
     </div>
   );

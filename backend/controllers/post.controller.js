@@ -56,7 +56,9 @@ export const likeUnlikePost = async (req, res) => {
       await Post.findByIdAndUpdate(postId, { $pull: { likes: userId } });
       await User.findByIdAndUpdate(userId, { $pull: { likedPosts: postId } });
 
-      res.status(200).json({ message: "Post unliked successfully" });
+      const updatedLikes = post.likes.filter((id) => id.toString() !== userId.toString())
+
+      res.status(200).json(updatedLikes);
     } else {
       // like
       post.likes.push(userId);
@@ -73,7 +75,9 @@ export const likeUnlikePost = async (req, res) => {
 
       await notification.save();
 
-      res.status(200).json({ message: "Post Liked succesfully" });
+      const updatedLikes = post.likes;
+
+      res.status(200).json(updatedLikes);
     }
   } catch (error) {
     console.log("Error in likeUnlikePost controller", error.message);
@@ -101,7 +105,10 @@ export const commentOnPost = async (req, res) => {
     post.comments.push(comment);
 
     await post.save();
-    res.status(200).json({ message: "Commented on post successfully" });
+
+    const comments = post.comments;
+
+    res.status(200).json(comments);
   } catch (error) {
     console.log("Error in commentOnPost controller", error.message);
     res.status(500).json({ error: "Internal server error" });
@@ -139,7 +146,7 @@ export const deletePost = async (req, res) => {
 export const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      .sort({ createAt: -1 })
+      .sort({ createdAt: -1 })
       .populate({
         path: "user",
         select: "-password",

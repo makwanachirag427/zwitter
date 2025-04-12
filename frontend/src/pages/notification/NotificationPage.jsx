@@ -2,32 +2,50 @@ import { IoSettingsOutline } from "react-icons/io5";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { FaHeart, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 
 const NotificationPage = () => {
-  const isLoading = false;
-  const notifications = [
-    {
-      _id: "1",
-      from: {
-        _id: "1",
-        username: "johndoe",
-        profileImg: "/avatars/boy2.png",
-      },
-      type: "follow",
+  const queryClient = useQueryClient();
+
+  const { data: notifications, isLoading } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: async () => {
+      try {
+        const res = await fetch("/api/notifications");
+        const data = res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
     },
-    {
-      _id: "2",
-      from: {
-        _id: "2",
-        username: "janedoe",
-        profileImg: "/avatars/girl1.png",
-      },
-      type: "like",
+  });
+
+  const { mutate: deleteNotifications } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch("/api/notifications", { method: "DELETE" });
+        const data = res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
     },
-  ];
-  const deleteNotifications = () => {
-    alert("all notifications deleted!");
-  };
+    onSuccess: () => {
+      toast.success("Notifications deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   return (
     <>
       <div className="flex-[4_4_0] border-x border-gray-700 min-h-screen">
@@ -52,27 +70,34 @@ const NotificationPage = () => {
             <LoadingSpinner size="lg" />
           </div>
         )}
-        {notifications?.length ===
-          0 && (
-            <div className="text-center p-4 font-bold">No notifications 🤔</div>
-          )}
-        {notifications.map((notification) => (
+        {notifications?.length === 0 && (
+          <div className="text-center p-4 font-bold">No notifications 🤔</div>
+        )}
+        {notifications?.map((notification) => (
           <div key={notification._id} className="flex gap-2 p-4">
             {notification.type === "follow" && (
               <FaUser className="w-7 h-7 text-primary" />
             )}
-            	{notification.type === "like" && <FaHeart className='w-7 h-7 text-red-500' />}
-							<Link to={`/profile/${notification.from.username}`}>
-								<div className='avatar'>
-									<div className='w-8 rounded-full'>
-										<img src={notification.from.profileImg || "/avatar-placeholder.png"} />
-									</div>
-								</div>
-								<div className='flex gap-1'>
-									<span className='font-bold'>@{notification.from.username}</span>{" "}
-									{notification.type === "follow" ? "followed you" : "liked your post"}
-								</div>
-							</Link>
+            {notification.type === "like" && (
+              <FaHeart className="w-7 h-7 text-red-500" />
+            )}
+            <Link to={`/profile/${notification.from.username}`}>
+              <div className="avatar">
+                <div className="w-8 rounded-full">
+                  <img
+                    src={
+                      notification.from.profileImg || "/avatar-placeholder.png"
+                    }
+                  />
+                </div>
+              </div>
+              <div className="flex gap-1">
+                <span className="font-bold">@{notification.from.username}</span>{" "}
+                {notification.type === "follow"
+                  ? "followed you"
+                  : "liked your post"}
+              </div>
+            </Link>
           </div>
         ))}
       </div>

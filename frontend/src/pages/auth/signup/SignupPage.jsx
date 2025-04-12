@@ -3,24 +3,63 @@ import { Link } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa";
 import { MdDriveFileRenameOutline, MdOutlinePassword } from "react-icons/md";
 import { MdEmail } from "react-icons/md";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 
 const SignupPage = () => {
-  const [form, setFormData] = useState({
+  const [formData, setFormData] = useState({
     email: "",
     username: "",
     fullName: "",
     password: "",
   });
 
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: signUpMutation,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async ({ email, username, fullName, password }) => {
+      try {
+        const res = await fetch(`/api/auth/signup`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, username, fullName, password }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to create account");
+        }
+        console.log(data);
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Account created successfully");
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      setFormData({
+        email: "",
+        username: "",
+        fullName: "",
+        password: "",
+      });
+    },
+  });
+
   const handleOnChange = (e) => {
-    setFormData({ ...form, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.table(form);
-    // setFormData({
-
-    // });
+    signUpMutation(formData);
   };
   return (
     <div className="min-h-screen w-full   flex flex-col sm:flex-row justify-center items-center ">
@@ -44,7 +83,7 @@ const SignupPage = () => {
                 placeholder="email"
                 required
                 className="placeholder:text-gray-400"
-                value={form.email}
+                value={formData.email}
                 onChange={handleOnChange}
               />
             </label>
@@ -58,7 +97,7 @@ const SignupPage = () => {
                   placeholder="username"
                   required
                   className="placeholder:text-gray-400"
-                  value={form.username}
+                  value={formData.username}
                   onChange={handleOnChange}
                 />
               </label>
@@ -70,7 +109,7 @@ const SignupPage = () => {
                   placeholder="fullname"
                   required
                   className="placeholder:text-gray-400"
-                  value={form.fullName}
+                  value={formData.fullName}
                   onChange={handleOnChange}
                 />
               </label>
@@ -84,14 +123,15 @@ const SignupPage = () => {
                 placeholder="password"
                 required
                 className="placeholder:text-gray-400"
-                value={form.password}
+                value={formData.password}
                 onChange={handleOnChange}
               />
             </label>
 
             <button className="btn btn-neutral mt-4  rounded-lg border-gray-500">
-              Login
+              {isPending ? "Loading..." : "Sign up"}
             </button>
+            {isError && <div className="text-red-500">{error.message}</div>}
           </fieldset>
         </form>
         <div className="fieldset w-sm px-8 py-0">
@@ -100,7 +140,7 @@ const SignupPage = () => {
             to="/login"
             className="btn btn-outline  mt-2 rounded-lg border-gray-500"
           >
-            Sign in
+            Log in
           </Link>
         </div>
       </div>
