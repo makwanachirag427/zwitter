@@ -44,7 +44,7 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen max-w-6xl font-inter flex mx-auto ">
+    <div className="min-h-screen max-w-7xl font-inter flex mx-auto ">
       {authUser && <Sidebar />}
       <Routes>
         <Route

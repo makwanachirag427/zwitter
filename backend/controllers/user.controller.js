@@ -71,16 +71,15 @@ export const getSuggestedUsers = async (req, res) => {
       {
         $match: { _id: { $ne: userId } },
       },
-      { $sample: { size: 10 } },
     ]);
 
     const filteredUsers = users.filter(
       (user) => !userFollowedByMe.following.includes(user._id)
     );
-    const suggestedUsers = filteredUsers.slice(0, 4);
-    suggestedUsers.forEach((user) => (user.password = null));
+   
+    filteredUsers.forEach((user) => (user.password = null));
 
-    res.status(200).json(suggestedUsers);
+    res.status(200).json(filteredUsers);
   } catch (error) {
     console.log("Error in getSuggestedUsers controller", error.message);
     res.status(500).json({ error: "Internal server error" });
