@@ -14,6 +14,7 @@ import ProfilePage from "./pages/profile/profilePage";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import LogInPage from "./pages/auth/login/LoginPage";
 
+
 const App = () => {
   const { data: authUser, isLoading } = useQuery({
     queryKey: ["authUser"],
