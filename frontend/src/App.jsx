@@ -10,7 +10,7 @@ import NotificationPage from "./pages/notification/NotificationPage";
 // components
 import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
-import ProfilePage from "./pages/profile/profilePage";
+import ProfilePage from "./pages/profile/ProfilePage";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import LoginPage from "./pages/auth/login/LoginPage";
 
