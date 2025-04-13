@@ -5,7 +5,7 @@ import { MdOutlinePassword } from "react-icons/md";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-const LoginPage = () => {
+const LogInPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -115,4 +115,4 @@ const LoginPage = () => {
     </div>
   );
 };
-export default LoginPage;
+export default LogInPage;

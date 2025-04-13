@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 // pages
 import HomePage from "./pages/home/HomePage";
 import SignupPage from "./pages/auth/signup/SignupPage";
-import LoginPage from "./pages/auth/login/loginPage";
+
 import NotificationPage from "./pages/notification/NotificationPage";
 
 // components
@@ -12,6 +12,7 @@ import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
 import ProfilePage from "./pages/profile/profilePage";
 import LoadingSpinner from "./components/common/LoadingSpinner";
+import LogInPage from "./pages/auth/login/LoginPage";
 
 const App = () => {
   const { data: authUser, isLoading } = useQuery({
@@ -57,7 +58,7 @@ const App = () => {
         />
         <Route
           path="/login"
-          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+          element={!authUser ? <LogInPage/> : <Navigate to="/" />}
         />
         <Route
           path="/notifications"
