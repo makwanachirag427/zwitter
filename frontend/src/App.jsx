@@ -12,7 +12,8 @@ import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
 import ProfilePage from "./pages/profile/profilePage";
 import LoadingSpinner from "./components/common/LoadingSpinner";
-import LogInPage from "./pages/auth/login/LoginPage";
+import LoginPage from "./pages/auth/login/LoginPage";
+
 
 
 const App = () => {
@@ -59,7 +60,7 @@ const App = () => {
         />
         <Route
           path="/login"
-          element={!authUser ? <LogInPage/> : <Navigate to="/" />}
+          element={!authUser ? <LoginPage/> : <Navigate to="/" />}
         />
         <Route
           path="/notifications"
