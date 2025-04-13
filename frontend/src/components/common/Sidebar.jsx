@@ -77,7 +77,7 @@ const Sidebar = () => {
           <div className="avatar hidden lg:block">
             <div className="w-8">
               <img
-                src={authUser?.profileImg || "/avatar-placehoder"}
+                src={authUser?.profileImg || "/avatar-placeholder.png"}
                 className="w-6 h-6 rounded-full"
               />
             </div>

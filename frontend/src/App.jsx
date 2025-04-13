@@ -61,11 +61,11 @@ const App = () => {
         />
         <Route
           path="/notifications"
-          element={authUser ? <NotificationPage /> : <Navigate to="login" />}
+          element={authUser ? <NotificationPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/profile/:username"
-          element={authUser ? <ProfilePage /> : <Navigate to="login" />}
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
       </Routes>
       {authUser && <RightPanel />}
