@@ -180,7 +180,7 @@ const ProfilePage = () => {
                       updateProfile({ coverImg, profileImg });
                       setCoverImg(null);
                       setProfileImg(null);
-                    }
+                    }}
                   >
                     {isUpdating ? <LoadingSpinner size="sm" /> : "Update"}
                   </button>
