@@ -108,10 +108,9 @@ const RightPanel = () => {
         </div>
 
         <div
-          // className={`bg-[#16181C] rounded-md p-4 ${searchTerm && "hidden"}`}
-          className={`bg-[#16181C] rounded-md p-4`}
+          className="flex flex-col items-center bg-[#16181C] rounded-md p-4"
         >
-          <p className="font-bold">Who to follow</p>
+          <p className="font-bold mb-2">Who to follow</p>
           <div className="flex flex-col gap-4">
             {/* Item */}
             {isLoading && (
@@ -127,7 +126,7 @@ const RightPanel = () => {
               suggestedUsers?.slice(0, 4).map((user) => (
                 <Link
                   to={`/profile/${user.username}`}
-                  className="flex justify-start items-center gap-4"
+                  className="flex justify-evenly items-center gap-4"
                   key={user._id}
                 >
                   <div className="flex  gap-2 items-center">
