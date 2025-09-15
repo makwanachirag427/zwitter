@@ -4,6 +4,7 @@ import { FaHeart, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import { API_URL } from "../../utils/constant";
 
 const NotificationPage = () => {
   const queryClient = useQueryClient();
@@ -12,7 +13,9 @@ const NotificationPage = () => {
     queryKey: ["notifications"],
     queryFn: async () => {
       try {
-        const res = await fetch("/api/notifications");
+        const res = await fetch(`${API_URL}/api/notifications`, {
+          credentials: "include",
+        });
         const data = res.json();
         if (!res.ok) {
           throw new Error(data.error || "Something went wrong");
@@ -27,7 +30,10 @@ const NotificationPage = () => {
   const { mutate: deleteNotifications } = useMutation({
     mutationFn: async () => {
       try {
-        const res = await fetch("/api/notifications", { method: "DELETE" });
+        const res = await fetch(`${API_URL}/api/notifications`, {
+          method: "DELETE",
+          credentials:"include"
+        });
         const data = res.json();
         if (!res.ok) {
           throw new Error(data.error || "Something went wrong");

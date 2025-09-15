@@ -12,6 +12,7 @@ import useFollow from "../../hooks/useFollow";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import useEditUserProfile from "../../hooks/useEditUserProfile";
 import { formatMemberSinceDate } from "../../utils/date";
+import { API_URL } from "../../utils/constant";
 
 const ProfilePage = () => {
   const queryClient = useQueryClient();
@@ -30,7 +31,9 @@ const ProfilePage = () => {
     queryKey: ["userPosts"],
     queryFn: async () => {
       try {
-        const res = await fetch(`/api/posts/user/${username}`);
+        const res = await fetch(`${API_URL}/api/posts/user/${username}`, {
+          credentials: "include",
+        });
         const data = await res.json();
         if (!res.ok) {
           throw new Error(data.error || "Something went wrong");
@@ -51,7 +54,9 @@ const ProfilePage = () => {
     queryKey: ["user"],
     queryFn: async () => {
       try {
-        const res = await fetch(`/api/users/profile/${username}`);
+        const res = await fetch(`${API_URL}/api/users/profile/${username}`, {
+          credentials: "include",
+        });
         const data = res.json();
         if (!res.ok) {
           throw new Error(data.error || "Something went wrong");

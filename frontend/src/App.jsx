@@ -13,15 +13,17 @@ import RightPanel from "./components/common/RightPanel";
 import ProfilePage from "./pages/profile/ProfilePage";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import LoginPage from "./pages/auth/login/LoginPage";
-
-
+import { API_URL } from "./utils/constant";
 
 const App = () => {
   const { data: authUser, isLoading } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch(`${API_URL}/api/auth/me`, {
+          method: "GET",
+          credentials: "include",
+        });
         const data = await res.json();
         if (res.status == 401) {
           return null;
@@ -39,7 +41,7 @@ const App = () => {
   });
 
   if (isLoading) {
-    return  (
+    return (
       <div className="h-screen flex justify-center items-center">
         <LoadingSpinner size="md" />
       </div>
@@ -60,7 +62,7 @@ const App = () => {
         />
         <Route
           path="/login"
-          element={!authUser ? <LoginPage/> : <Navigate to="/" />}
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
         <Route
           path="/notifications"

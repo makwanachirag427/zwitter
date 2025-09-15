@@ -6,6 +6,7 @@ import useFollow from "../../hooks/useFollow";
 import LoadingSpinner from "./LoadingSpinner";
 import { useEffect, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
+import { API_URL } from "../../utils/constant";
 
 const RightPanel = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +17,10 @@ const RightPanel = () => {
     queryKey: ["suggestedUsers"],
     queryFn: async () => {
       try {
-        const res = await fetch("/api/users/suggested");
+        const res = await fetch(`${API_URL}/api/users/suggested`, {
+          method: "GET",
+          credentials: "include",
+        });
         const data = await res.json();
         if (!res.ok) {
           throw new Error(data.error || "Something went wrong");
@@ -107,9 +111,7 @@ const RightPanel = () => {
           )}
         </div>
 
-        <div
-          className="flex flex-col items-center bg-[#16181C] rounded-md p-4"
-        >
+        <div className="flex flex-col items-center bg-[#16181C] rounded-md p-4">
           <p className="font-bold mb-2">Who to follow</p>
           <div className="flex flex-col gap-4">
             {/* Item */}

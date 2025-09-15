@@ -5,6 +5,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { API_URL } from "../../utils/constant";
 const CreatePost = () => {
   const queryClient = useQueryClient();
 
@@ -21,12 +22,13 @@ const CreatePost = () => {
   } = useMutation({
     mutationFn: async ({ text, img }) => {
       try {
-        const res = await fetch("/api/posts/create", {
+        const res = await fetch(`${API_URL}/api/posts/create`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ text, img }),
+          credentials:"include"
         });
 
         const data = res.json();

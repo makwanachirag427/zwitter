@@ -5,19 +5,23 @@ import { FaUser } from "react-icons/fa";
 import { BiLogOut } from "react-icons/bi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import { API_URL } from "../../utils/constant";
 const Sidebar = () => {
-  const data = {
-    fullName: "John Doe",
-    username: "johndoe",
-    profileImg: "/avatars/boy1.png",
-  };
+  // const data = {
+  //   fullName: "John Doe",
+  //   username: "johndoe",
+  //   profileImg: "/avatars/boy1.png",
+  // };
 
   const queryClient = useQueryClient();
 
   const { mutate: logoutMutation } = useMutation({
     mutationFn: async () => {
       try {
-        const res = await fetch("/api/auth/logout", { method: "POST" });
+        const res = await fetch(`${API_URL}/api/auth/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
         const data = await res.json();
         if (!res.ok) {
           throw new Error(data.error || "Something went wrong");
@@ -38,7 +42,6 @@ const Sidebar = () => {
   });
 
   const authUser = queryClient.getQueryData(["authUser"]);
- 
 
   return (
     <div className="relative min-h-screen  w-18 md:w-[18%]  flex flex-col  items-center lg:items-start justify-between">
@@ -62,7 +65,10 @@ const Sidebar = () => {
           </Link>
         </li>
         <div className="flex items-center  border border-transparent rounded-3xl p-2 w-fit  lg:pr-5 lg:pl-3  hover:bg-gray-900">
-          <Link to={`/profile/${authUser?.username}`} className="flex items-center">
+          <Link
+            to={`/profile/${authUser?.username}`}
+            className="flex items-center"
+          >
             <FaUser className="w-6 h-6" />
             <span className="ml-5 hidden lg:block  text-lg">Profile</span>
           </Link>
@@ -86,7 +92,9 @@ const Sidebar = () => {
             <p className="font-semibold text-sm text-white leading-none">
               {authUser?.fullName}
             </p>
-            <p className="text-bold text-sm text-gray-500">@{authUser?.username}</p>
+            <p className="text-bold text-sm text-gray-500">
+              @{authUser?.username}
+            </p>
           </div>
           <BiLogOut
             className="w-6 h-6"

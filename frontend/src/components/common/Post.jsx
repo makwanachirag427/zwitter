@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { formatPostDate } from "../../utils/date";
 import { toast } from "react-hot-toast";
 import LoadingSpinner from "../common/LoadingSpinner";
+import { API_URL } from "../../utils/constant";
 
 const Post = ({ post }) => {
   const queryClient = useQueryClient();
@@ -21,8 +22,9 @@ const Post = ({ post }) => {
   const { mutate: deletePost, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       try {
-        const res = await fetch(`/api/posts/${post._id}`, {
+        const res = await fetch(`${API_URL}/api/posts/${post._id}`, {
           method: "DELETE",
+          credentials:"include"
         });
         const data = await res.json();
         if (!res.ok) {
@@ -42,8 +44,9 @@ const Post = ({ post }) => {
   const { mutate: likePost, isPending: isLiking } = useMutation({
     mutationFn: async () => {
       try {
-        const res = await fetch(`/api/posts/like/${post._id}`, {
+        const res = await fetch(`${API_URL}/api/posts/like/${post._id}`, {
           method: "POST",
+          credentials:"include"
         });
         const data = await res.json();
         if (!res.ok) {
@@ -73,12 +76,13 @@ const Post = ({ post }) => {
   const { mutate: commentOnPost, isPending: isCommenting } = useMutation({
     mutationFn: async (comment) => {
       try {
-        const res = await fetch(`/api/posts/comment/${post._id}`, {
+        const res = await fetch(`${API_URL}/api/posts/comment/${post._id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ text: comment }),
+          credentials:"include"
         });
         const data = await res.json();
         if (!res.ok) {
