@@ -97,7 +97,12 @@ export const login = async (req, res) => {
 };
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("jwt");
+    const isProd = process.env.NODE_ENV === "production";
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
+    });
 
     res.status(200).json("Logged out successfully");
   } catch (error) {
@@ -114,5 +119,3 @@ export const getMe = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
